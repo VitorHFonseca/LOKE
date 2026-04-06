@@ -1,0 +1,6 @@
+psycopg2-binary==2.9.9
+scikit-learn==1.4.2
+python-dotenv==1.0.1
+colorama==0.4.6
+numpy==1.26.4
+flask==3.0.3
