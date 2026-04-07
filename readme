@@ -1,0 +1,65 @@
+🤖 LOKE: Sistema de IA Autodidata
+Loke é uma inteligência artificial desenvolvida em Python que utiliza Processamento de Linguagem Natural (PLN) para aprender com interações em tempo real. O sistema utiliza uma arquitetura modular que separa a lógica de aprendizado, a persistência de dados e a interface de usuário.
+
+🛠️ Tecnologias Utilizadas
+Linguagem: Python 3.13
+
+Inteligência Artificial: Scikit-Learn (Vetorização TF-IDF e Similaridade de Cosseno)
+
+Banco de Dados: PostgreSQL (Persistência de padrões e histórico de conversas)
+
+Backend: Flask (API REST)
+
+Frontend: HTML5, CSS3 e JavaScript (Interface reativa)
+
+🏗️ Estrutura do Projeto
+Plaintext
+LOKE/
+├── ai/                 # Core da Inteligência Artificial
+│   ├── __init__.py
+│   └── brain.py        # Motor de PLN (TF-IDF)
+├── database/           # Camada de Persistência
+│   ├── __init__.py
+│   ├── db.py           # Conexão e Queries PostgreSQL
+│   └── schema.sql      # Estrutura das tabelas
+├── templates/          # Arquivos de visualização (HTML)
+│   └── index.html
+├── static/             # Arquivos estáticos (CSS, JS, Imagens)
+├── .env                # Variáveis de ambiente (DATABASE_URL)
+├── app.py              # Ponto de entrada da aplicação Flask
+└── requirements.txt    # Dependências do sistema
+🚀 Como Executar
+1. Requisitos Prévios
+PostgreSQL instalado e rodando.
+
+Python 3.10 ou superior.
+
+2. Configuração do Banco de Dados
+Crie um banco de dados chamado loke e execute o script em database/schema.sql para criar as tabelas patterns, conversations e feedback.
+
+3. Variáveis de Ambiente
+Crie um arquivo .env na raiz do projeto:
+
+Snippet de código
+DATABASE_URL=postgresql://usuario:senha@localhost:5432/loke
+4. Instalação de Dependências
+PowerShell
+pip install -r requirements.txt
+5. Populando o Conhecimento Inicial (Seed)
+PowerShell
+$env:PYTHONPATH = "."; python -c "from database.db import seed_from_json; seed_from_json()"
+6. Iniciando o Sistema
+PowerShell
+python app.py
+Acesse: http://localhost:5000
+
+🧠 Como a IA Aprende?
+O Loke não trabalha com respostas fixas simples. Ele utiliza um modelo de Vetorização de Texto:
+
+Entrada: O texto do usuário é transformado em um vetor numérico.
+
+Comparação: O sistema calcula a Similaridade de Cosseno entre a pergunta atual e todas as perguntas salvas no banco.
+
+Decisão: Se a confiança for acima do threshold (limiar), ele responde. Caso contrário, ele solicita um novo ensinamento ao usuário e salva no banco de dados para consultas futuras.
+
+Desenvolvido por Vitor Henrique Fonseca Data Engineer & Technology Specialist

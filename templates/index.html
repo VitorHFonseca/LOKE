@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOKE | AI Control Panel</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="status-indicator">
+                <span class="dot"></span> LOKE ONLINE | BETIM-MG
+            </div>
+            
+            <h3>SISTEMA DE PADRÕES</h3>
+            <div class="stats-panel">
+                <p>CONHECIMENTO ATIVO: <span id="stat-patterns">--</span></p>
+            </div>
+
+            <h3>HISTÓRICO DE SESSÃO</h3>
+            <div id="history-container">
+                <p class="loading">Sincronizando banco...</p>
+            </div>
+        </aside>
+
+        <main class="chat-area">
+            <div id="chat-container">
+                <div class="message ai">
+                    <div class="msg-header">LOKE</div>
+                    <p>Conexão estabelecida. Como posso ajudar no seu pipeline de dados ou história hoje?</p>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="user-input" placeholder="Digite sua mensagem..." autocomplete="off">
+                <button onclick="sendMessage()" id="send-btn">ENVIAR</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Função para enviar mensagens para a API /api/chat
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+
+            appendMessage(text, 'user');
+            input.value = '';
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await response.json();
+                
+                // Se a IA trouxe uma resposta com ID, permite edição
+                appendMessage(data.response, 'ai', data.id);
+                
+                // Atualiza os stats (aqueles 24 padrões)
+                updateStats();
+            } catch (error) {
+                appendMessage("⚠️ Erro de conexão com o servidor Flask.", "ai");
+                console.error("Erro:", error);
+            }
+        }
+
+        function appendMessage(text, type, id = null) {
+            const container = document.getElementById('chat-container');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+            
+            let html = `<div class="msg-header">${type.toUpperCase()}</div><p>${text}</p>`;
+            
+            if (type === 'ai' && id) {
+                html += `<button class="edit-btn" onclick="editKnowledge(${id}, '${text}')">📝 CORRIGIR</button>`;
+            }
+            
+            msgDiv.innerHTML = html;
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function updateStats() {
+            try {
+                const res = await fetch('/stats');
+                const data = await res.json();
+                document.getElementById('stat-patterns').innerText = data.total_patterns;
+            } catch (e) { console.log("Erro ao ler stats"); }
+        }
+
+        async function editKnowledge(id, oldText) {
+            const newText = prompt("Qual a correção para este padrão?", oldText);
+            if (newText && newText !== oldText) {
+                const res = await fetch('/update_pattern', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id, new_response: newText })
+                });
+                const result = await res.json();
+                if (result.success) alert("✓ Banco Loke atualizado!");
+            }
+        }
+
+        // Atalho Tecla Enter
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Inicia os stats ao carregar a página
+        updateStats();
+    </script>
+</body>
+</html>
