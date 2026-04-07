@@ -1,6 +1,18 @@
+# Servidor Web e API
+flask==3.0.2
+gunicorn==21.2.0
+
+# Banco de Dados (PostgreSQL)
 psycopg2-binary==2.9.9
-scikit-learn==1.4.2
+SQLAlchemy==2.0.27
+
+# Corretor de Português (LanguageTool)
+language-tool-python==0.7.8
+
+# Inteligência Artificial e APIs
+openai==1.12.0
+requests==2.31.0
+
+# Utilidades e Ambiente
 python-dotenv==1.0.1
-colorama==0.4.6
-numpy==1.26.4
-flask==3.0.3
+pandas==2.2.0
