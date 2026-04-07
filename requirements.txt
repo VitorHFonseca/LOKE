@@ -1,6 +1,3 @@
 flask
-gunicorn
 psycopg2-binary
-language-tool-python
-requests
 python-dotenv
